@@ -1,0 +1,68 @@
+import pandas as pd
+
+files = [f"C:/Users/lukas/Desktop/TestFSP/compras_2023{str(i).zfill(2)}.csv" for i in range(1, 13)]
+dfs = [pd.read_csv(file, delimiter=';') for file in files]
+all_data = pd.concat(dfs)
+
+all_data['creation_date'] = pd.to_datetime(all_data['creation_date']).dt.strftime('%Y-%m-%d')
+all_data['buy'] = all_data['buy'].astype(int)
+all_data['amount'] = all_data['amount'].astype(float)
+all_data['times'] = all_data['times'].astype(int)
+
+all_data = all_data.sort_values(by=['account', 'period'])
+
+all_data['compras_u3m'] = 0
+all_data['monto_compras_u3m'] = 0.0
+all_data['veces_compras_u3m'] = 0
+all_data['periodo_ultima_compra'] = 0
+all_data['meses_sin_comprar'] = 0
+
+def calculate_metrics(group):
+    group = group.sort_values(by='period')
+    group['compras_u3m'] = group['buy'].rolling(window=3, min_periods=1).sum().shift(1).fillna(0).astype(int)
+    group['monto_compras_u3m'] = group['amount'].rolling(window=3, min_periods=1).sum().shift(1).fillna(0)
+    group['veces_compras_u3m'] = group['times'].rolling(window=3, min_periods=1).sum().shift(1).fillna(0)
+
+    last_buy_period = 0
+    for i in range(len(group)):
+        current_period = group.iloc[i]
+        if current_period['buy'] > 0:
+            last_buy_period = current_period['period']
+            group.at[group.index[i], 'periodo_ultima_compra'] = last_buy_period
+            group.at[group.index[i], 'meses_sin_comprar'] = 0
+        else:
+            if last_buy_period != 0:
+                months_since_last_buy = int(current_period['period']) - int(last_buy_period)
+                group.at[group.index[i], 'meses_sin_comprar'] = months_since_last_buy
+
+    return group
+
+all_data = all_data.groupby('account', group_keys=False).apply(calculate_metrics).reset_index(drop=True)
+
+all_data.to_csv("C:/Users/lukas/Desktop/TestFSP/compras.csv", index=False)
+
+all_data
+
+
+
+Le habia agregado este timer para ver cuanto se demoraba en ejecutar el cual me arrojo que se demora 200 segundos
+
+end_time = time.time()
+elapsed_time = end_time - start_time
+
+print(f"Tiempo de ejecución: {elapsed_time:.2f} segundos")
+
+
+CAMBIOS REALIZADOS
+
+Cambio en la carga de datos: se agrega a una lista los csv para procesar mas rapido con a funcion concat de forma individual
+
+cambio en los bucles: se agrega funcion rolling para no tener que entrar en bucles repetidos con valores predeterminados (0) en las nuevas columnas 
+
+
+
+
+
+
+
+

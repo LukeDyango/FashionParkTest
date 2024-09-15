@@ -1,0 +1,36 @@
+Test 1
+
+ Consiste en agrupar los datos de los archivos compras_{periodos}.csv 
+ donde los periodos son desde enero 2023 hasta diciembre 2023 en formato YYYYMM
+ en un solo archivo llamado compras.csv
+
+ este archivo debe tener las siguientes columnas 
+ account: Id del Cliente
+ period: Año Mes del periodo de observación
+ creation_date: Fecha de Ingreso del Cliente (debe quedar en formato YYYY-MM-DD)
+ buy: Variable Binaria donde el cliente compra en el periodo de observacion, 1 si compra 0 si no compra
+ amount: Monto de la compras realizadas por el cliente en el periodo de observacion
+ times: Cantidad de veces que el cliente compra en el periodo de observacion
+
+ Variables a crear
+ compras_u3m: Binario si el cliente compro durante los ultimos 3 meses:
+ esta variable debe ser 1 si compro al menos una vez en los ultimos 3 meses y 0 si no compro en los ultimos 3 meses sin considerar el periodo actual
+ monto_compras_u3m: Monto total de las compras realizadas por el cliente en los ultimos 3 meses sin considerar el periodo actual
+ veces_compras_u3m: Cantidad de veces que el cliente compro en los ultimos 3 meses sin considerar el periodo actual
+ periodo_ultima_compra: Periodo en que el cliente realizo su ultima compra, si el cliente no ha comprado debe ser 0
+ meses_sin_comprar: Cantidad de meses que el cliente lleva sin comprar, si el cliente compro en el periodo actual debe ser 0
+
+Test 2
+
+ Consiste en crear un formulario de ingreso de clientes donde se solicitan los siguientes datos:
+ con los siguientes campos:
+ rut: RUT del cliente
+ name: Nombre del cliente
+ last_name: Apellido del cliente
+ email: Email del cliente
+ phone: Telefono del cliente
+ channel: Canal de ingreso del cliente (Call Center, Web, Email) = ['Call Center','Web','Email']
+ date: Fecha del ingreso del cliente (debe quedar en formato YYYY-MM-DD), esta fecha debe ser generada automaticamente al momento de ingresar el cliente
+ user: Usuario que ingreso el cliente = ['AC1', 'AC2', 'AC3', 'JC']
+
+ el formulario debe insertar los registros en el archivo mantenedor_clientes.csv donde cada fila representa un cliente ingresado
